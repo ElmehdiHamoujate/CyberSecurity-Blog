@@ -88,6 +88,13 @@ img { max-width: 100%; display: block; }
   transition: color var(--transition);
 }
 .site-nav a:hover, .site-nav a.active { color: #fff; }
+.header-byline {
+  font-size: .7rem;
+  color: rgba(255,255,255,.25);
+  letter-spacing: .03em;
+  padding-left: .75rem;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
 
 /* ── Hero ─────────────────────────────────────────────────────────────────── */
 .hero {

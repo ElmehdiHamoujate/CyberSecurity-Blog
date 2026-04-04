@@ -55,6 +55,7 @@ function topicLabel(string $slug): string {
       </a>
       <nav class="site-nav">
         <a href="/" class="active">Blog</a>
+        <span class="header-byline">by Ramzi Naouali &amp; Elmehdi Hamoujate</span>
       </nav>
     </div>
   </header>

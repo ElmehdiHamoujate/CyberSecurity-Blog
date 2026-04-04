@@ -101,6 +101,7 @@ $heroGradient  = topicGradient($topicSlug);
       </a>
       <nav class="site-nav">
         <a href="/">Blog</a>
+        <span class="header-byline">by Ramzi Naouali &amp; Elmehdi Hamoujate</span>
       </nav>
     </div>
   </header>
