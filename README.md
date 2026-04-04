@@ -41,7 +41,7 @@ SQLite data must live on a Volume or it will be wiped on every deploy.
 
 1. In the Railway project, click your **web service** → **Volumes** tab.
 2. Click **+ Add Volume**.
-3. Set **Mount Path** to `/data`.
+3. Set **Mount Path** to `/app/data`.
 4. Click **Add**.
 
 ### Step 3 — Set environment variables
@@ -52,7 +52,7 @@ In the web service → **Variables** tab, add:
 |----------------------|-------------------------------|
 | `CLAUDE_API_KEY`     | Your Anthropic API key        |
 | `AMAZON_ASSOCIATE_ID`| `270cc89-20`                  |
-| `DB_PATH`            | `/data/blog.db`               |
+| `DB_PATH`            | `/app/data/blog.db`           |
 | `POST_INTERVAL`      | `300` (5 min) or `86400` (1 day) |
 
 ### Step 4 — Add the Cron service
@@ -68,7 +68,7 @@ The cron service runs `generate_post.php` on a schedule.
    - Testing: `*/5 * * * *` (every 5 minutes)
    - Production: `0 8 * * *` (8 AM daily)
 4. Add the **same environment variables** as the web service (Step 3).
-5. Attach the **same Volume** (`/data`) to this service so it shares the database.
+5. Attach the **same Volume** (`/app/data`) to this service so it shares the database.
 
 ### Step 5 — Deploy
 

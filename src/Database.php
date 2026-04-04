@@ -6,7 +6,7 @@ class Database
 
     public function __construct()
     {
-        $dbPath = getenv('DB_PATH') ?: __DIR__ . '/../data/blog.db';
+        $dbPath = getenv('DB_PATH') ?: __DIR__ . '/../app/data/blog.db';
 
         $dir = dirname($dbPath);
         if (!is_dir($dir)) {
