@@ -6,7 +6,7 @@ class Database
 
     public function __construct()
     {
-        $dbPath = getenv('DB_PATH') ?: __DIR__ . '/../app/data/blog.db';
+        $dbPath = getenv('DB_PATH') ?: __DIR__ . '/../data/blog.db';
 
         $dir = dirname($dbPath);
         if (!is_dir($dir)) {
@@ -50,6 +50,51 @@ class Database
             } catch (PDOException) {
                 // Column already exists — ignore
             }
+        }
+
+        $this->seedIfEmpty();
+    }
+
+    /**
+     * If the posts table is empty and a seed/posts.json file exists in the
+     * project root, import those posts. Runs on every startup but only
+     * inserts when the table is truly empty — safe to leave in production.
+     */
+    private function seedIfEmpty(): void
+    {
+        $count = (int) $this->pdo->query('SELECT COUNT(*) FROM posts')->fetchColumn();
+        if ($count > 0) {
+            return;
+        }
+
+        $seedFile = __DIR__ . '/../seed/posts.json';
+        if (!file_exists($seedFile)) {
+            return;
+        }
+
+        $posts = json_decode(file_get_contents($seedFile), true);
+        if (empty($posts) || !is_array($posts)) {
+            return;
+        }
+
+        $stmt = $this->pdo->prepare('
+            INSERT OR IGNORE INTO posts
+                (title, slug, excerpt, content_html, affiliate_html, topic_slug, used_books, created_at)
+            VALUES
+                (:title, :slug, :excerpt, :content_html, :affiliate_html, :topic_slug, :used_books, :created_at)
+        ');
+
+        foreach ($posts as $post) {
+            $stmt->execute([
+                ':title'          => $post['title']          ?? '',
+                ':slug'           => $post['slug']           ?? '',
+                ':excerpt'        => $post['excerpt']        ?? '',
+                ':content_html'   => $post['content_html']   ?? '',
+                ':affiliate_html' => $post['affiliate_html'] ?? '',
+                ':topic_slug'     => $post['topic_slug']     ?? '',
+                ':used_books'     => $post['used_books']     ?? '[]',
+                ':created_at'     => $post['created_at']     ?? date('Y-m-d H:i:s'),
+            ]);
         }
     }
 
