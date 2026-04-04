@@ -1,0 +1,397 @@
+/* ========================================
+   Base / Reset
+   ======================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  background-color: #0f0f0f;
+  color: #c8c8c8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; display: block; }
+
+/* ========================================
+   Layout
+   ======================================== */
+.container {
+  width: 100%;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+main.container {
+  flex: 1;
+  padding-top: 2.5rem;
+  padding-bottom: 4rem;
+}
+
+/* ========================================
+   Header
+   ======================================== */
+.site-header {
+  border-bottom: 1px solid #1e1e1e;
+  padding: 1rem 0;
+}
+
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-logo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+}
+.site-logo:hover { color: #fff; }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+.site-nav a {
+  font-size: 0.875rem;
+  color: #888;
+  transition: color 0.15s;
+}
+.site-nav a:hover,
+.site-nav a.active { color: #fff; }
+
+/* ========================================
+   Page heading
+   ======================================== */
+.page-heading {
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin-bottom: 2.5rem;
+  line-height: 1.15;
+}
+
+/* ========================================
+   Post list (index)
+   ======================================== */
+.post-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-item {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid #1a1a1a;
+}
+.post-item:first-child { border-top: 1px solid #1a1a1a; }
+
+.post-item h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.post-item h2 a {
+  color: #eee;
+  transition: color 0.15s;
+}
+.post-item h2 a:hover { color: #fff; text-decoration: underline; }
+
+.post-date {
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 0.65rem;
+}
+
+.post-excerpt {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+}
+
+.read-more {
+  font-size: 0.875rem;
+  color: #aaa;
+  transition: color 0.15s;
+}
+.read-more:hover { color: #fff; }
+
+/* ========================================
+   Empty / Error states
+   ======================================== */
+.empty-state {
+  padding: 3rem 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.error-state { padding: 3rem 0; }
+.error-state h1 { font-size: 1.5rem; color: #eee; margin-bottom: 0.75rem; }
+.error-state p  { color: #888; margin-bottom: 1.5rem; font-size: 0.95rem; }
+.error-state a  { color: #aaa; text-decoration: underline; }
+
+/* ========================================
+   Pagination — numbered like mess-o-midi
+   ======================================== */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  color: #888;
+  transition: color 0.15s, background 0.15s;
+}
+
+.pagination a:hover { color: #fff; background: #1e1e1e; }
+
+.pagination .current {
+  color: #fff;
+  background: #1e1e1e;
+  font-weight: 600;
+}
+
+.pagination .next-link {
+  color: #aaa;
+  padding: 0 0.5rem;
+}
+.pagination .next-link:hover { color: #fff; }
+
+/* ========================================
+   Single Post
+   ======================================== */
+.single-post { max-width: 680px; }
+
+.post-back {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 2rem;
+  transition: color 0.15s;
+}
+.post-back:hover { color: #aaa; }
+
+.post-title-single {
+  font-size: clamp(1.4rem, 4.5vw, 2rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+.post-date-single {
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+/* ========================================
+   Post Content (generated HTML)
+   ======================================== */
+.post-content {
+  font-size: 1rem;
+  color: #bbb;
+  line-height: 1.8;
+}
+
+.post-content p { margin-bottom: 1.25rem; }
+
+.post-content h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #eee;
+  margin: 2.25rem 0 0.75rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.post-content h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ddd;
+  margin: 1.75rem 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.post-content ul,
+.post-content ol {
+  margin: 0 0 1.25rem 1.5rem;
+}
+.post-content li {
+  margin-bottom: 0.4rem;
+  line-height: 1.7;
+}
+
+.post-content a {
+  color: #aaa;
+  text-decoration: underline;
+}
+.post-content a:hover { color: #fff; }
+
+.post-content strong { color: #ddd; font-weight: 600; }
+.post-content em     { font-style: italic; color: #999; }
+
+.post-content code {
+  background: #1a1a1a;
+  color: #ccc;
+  padding: 0.15em 0.45em;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+}
+
+.post-content pre {
+  background: #1a1a1a;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+}
+.post-content pre code { background: none; padding: 0; font-size: 0.82rem; }
+
+/* ========================================
+   Affiliate / Recommended Reading section
+   ======================================== */
+.affiliate-section {
+  margin-top: 3rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid #1a1a1a;
+}
+
+.affiliate-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #eee;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+}
+
+.affiliate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.affiliate-item h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ddd;
+  margin-bottom: 0.1rem;
+  letter-spacing: -0.01em;
+}
+
+.affiliate-byline {
+  font-size: 0.82rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.affiliate-desc {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.65;
+  margin-bottom: 0.6rem;
+}
+
+.affiliate-link {
+  font-size: 0.875rem;
+  color: #aaa;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+.affiliate-link:hover { color: #fff; }
+
+/* ========================================
+   Post navigation
+   ======================================== */
+.post-nav {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #1a1a1a;
+}
+.post-nav a {
+  font-size: 0.875rem;
+  color: #555;
+  transition: color 0.15s;
+}
+.post-nav a:hover { color: #aaa; }
+
+/* ========================================
+   Footer
+   ======================================== */
+.site-footer {
+  border-top: 1px solid #1a1a1a;
+  padding: 2rem 0;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-brand {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #555;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 0.8rem;
+  color: #444;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: #aaa; }
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: #333;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (min-width: 600px) {
+  .post-item h2 { font-size: 1.25rem; }
+  .post-item    { padding: 2rem 0; }
+
+  .footer-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+  .footer-links { gap: 1.25rem; }
+}
