@@ -62,11 +62,6 @@ class Database
      */
     private function seedIfEmpty(): void
     {
-        $count = (int) $this->pdo->query('SELECT COUNT(*) FROM posts')->fetchColumn();
-        if ($count > 0) {
-            return;
-        }
-
         $seedFile = __DIR__ . '/../seed/posts.json';
         if (!file_exists($seedFile)) {
             return;
@@ -77,24 +72,49 @@ class Database
             return;
         }
 
-        $stmt = $this->pdo->prepare('
-            INSERT OR IGNORE INTO posts
-                (title, slug, excerpt, content_html, affiliate_html, topic_slug, used_books, created_at)
-            VALUES
-                (:title, :slug, :excerpt, :content_html, :affiliate_html, :topic_slug, :used_books, :created_at)
-        ');
+        $count = (int) $this->pdo->query('SELECT COUNT(*) FROM posts')->fetchColumn();
 
-        foreach ($posts as $post) {
-            $stmt->execute([
-                ':title'          => $post['title']          ?? '',
-                ':slug'           => $post['slug']           ?? '',
-                ':excerpt'        => $post['excerpt']        ?? '',
-                ':content_html'   => $post['content_html']   ?? '',
-                ':affiliate_html' => $post['affiliate_html'] ?? '',
-                ':topic_slug'     => $post['topic_slug']     ?? '',
-                ':used_books'     => $post['used_books']     ?? '[]',
-                ':created_at'     => $post['created_at']     ?? date('Y-m-d H:i:s'),
-            ]);
+        if ($count === 0) {
+            // Table is empty — do a full seed
+            $insert = $this->pdo->prepare('
+                INSERT OR IGNORE INTO posts
+                    (title, slug, excerpt, content_html, affiliate_html, topic_slug, used_books, created_at)
+                VALUES
+                    (:title, :slug, :excerpt, :content_html, :affiliate_html, :topic_slug, :used_books, :created_at)
+            ');
+
+            foreach ($posts as $post) {
+                $insert->execute([
+                    ':title'          => $post['title']          ?? '',
+                    ':slug'           => $post['slug']           ?? '',
+                    ':excerpt'        => $post['excerpt']        ?? '',
+                    ':content_html'   => $post['content_html']   ?? '',
+                    ':affiliate_html' => $post['affiliate_html'] ?? '',
+                    ':topic_slug'     => $post['topic_slug']     ?? '',
+                    ':used_books'     => $post['used_books']     ?? '[]',
+                    ':created_at'     => $post['created_at']     ?? date('Y-m-d H:i:s'),
+                ]);
+            }
+        } else {
+            // Table has posts — patch any rows with missing affiliate_html from seed
+            $update = $this->pdo->prepare('
+                UPDATE posts
+                SET affiliate_html = :affiliate_html,
+                    topic_slug     = CASE WHEN topic_slug = "" THEN :topic_slug ELSE topic_slug END,
+                    used_books     = CASE WHEN used_books = "[]" THEN :used_books ELSE used_books END
+                WHERE slug = :slug
+                  AND (affiliate_html = "" OR affiliate_html IS NULL)
+            ');
+
+            foreach ($posts as $post) {
+                if (empty($post['affiliate_html'])) continue;
+                $update->execute([
+                    ':slug'          => $post['slug'],
+                    ':affiliate_html'=> $post['affiliate_html'],
+                    ':topic_slug'    => $post['topic_slug'] ?? '',
+                    ':used_books'    => $post['used_books'] ?? '[]',
+                ]);
+            }
         }
     }
 
