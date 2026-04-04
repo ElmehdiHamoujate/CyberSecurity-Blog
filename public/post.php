@@ -187,7 +187,7 @@ $heroGradient  = topicGradient($topicSlug);
         <div class="footer-links">
           <a href="/">Blog</a>
         </div>
-        <p class="footer-copy">© <?= date('Y') ?> SMB CyberSecurity · AI-generated · Affiliate links</p>
+        <p class="footer-copy">© <?= date('Y') ?> SMB CyberSecurity · Founded by Ramzi Naouali &amp; Elmehdi Hamoujate · Some links are affiliate links.</p>
       </div>
     </div>
   </footer>
