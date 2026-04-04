@@ -325,12 +325,21 @@ main.container {
 }
 
 .affiliate-link {
-  font-size: 0.875rem;
-  color: #aaa;
-  text-decoration: underline;
-  transition: color 0.15s;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0f0f0f;
+  background: #c8f5e5;
+  padding: 0.3em 0.75em;
+  border-radius: 4px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.15s, color 0.15s;
 }
-.affiliate-link:hover { color: #fff; }
+.affiliate-link:hover {
+  background: #a8e6d3;
+  color: #0f0f0f;
+}
 
 /* ========================================
    Post navigation
