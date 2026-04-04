@@ -24,20 +24,33 @@ class Database
 
     private function migrate(): void
     {
+        // Base table
         $this->pdo->exec("
             CREATE TABLE IF NOT EXISTS posts (
-                id            INTEGER PRIMARY KEY AUTOINCREMENT,
-                title         TEXT    NOT NULL,
-                slug          TEXT    UNIQUE NOT NULL,
-                excerpt       TEXT    NOT NULL,
-                content_html  TEXT    NOT NULL,
-                affiliate_html TEXT   NOT NULL DEFAULT '',
-                created_at    DATETIME DEFAULT (datetime('now'))
+                id             INTEGER  PRIMARY KEY AUTOINCREMENT,
+                title          TEXT     NOT NULL,
+                slug           TEXT     UNIQUE NOT NULL,
+                excerpt        TEXT     NOT NULL,
+                content_html   TEXT     NOT NULL,
+                affiliate_html TEXT     NOT NULL DEFAULT '',
+                created_at     DATETIME DEFAULT (datetime('now'))
             );
 
             CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
             CREATE INDEX IF NOT EXISTS idx_posts_slug    ON posts(slug);
         ");
+
+        // Additive migrations — safe to run on existing DBs
+        foreach ([
+            "ALTER TABLE posts ADD COLUMN topic_slug  TEXT NOT NULL DEFAULT ''",
+            "ALTER TABLE posts ADD COLUMN used_books  TEXT NOT NULL DEFAULT '[]'",
+        ] as $sql) {
+            try {
+                $this->pdo->exec($sql);
+            } catch (PDOException) {
+                // Column already exists — ignore
+            }
+        }
     }
 
     public function getPost(string $slug): array|false
@@ -65,15 +78,17 @@ class Database
     public function insertPost(array $data): bool
     {
         $stmt = $this->pdo->prepare('
-            INSERT INTO posts (title, slug, excerpt, content_html, affiliate_html)
-            VALUES (:title, :slug, :excerpt, :content_html, :affiliate_html)
+            INSERT INTO posts (title, slug, excerpt, content_html, affiliate_html, topic_slug, used_books)
+            VALUES (:title, :slug, :excerpt, :content_html, :affiliate_html, :topic_slug, :used_books)
         ');
         return $stmt->execute([
-            ':title'         => $data['title'],
-            ':slug'          => $data['slug'],
-            ':excerpt'       => $data['excerpt'],
-            ':content_html'  => $data['content_html'],
-            ':affiliate_html'=> $data['affiliate_html'],
+            ':title'          => $data['title'],
+            ':slug'           => $data['slug'],
+            ':excerpt'        => $data['excerpt'],
+            ':content_html'   => $data['content_html'],
+            ':affiliate_html' => $data['affiliate_html'],
+            ':topic_slug'     => $data['topic_slug']  ?? '',
+            ':used_books'     => json_encode($data['used_books'] ?? []),
         ]);
     }
 
@@ -91,6 +106,35 @@ class Database
         );
         $stmt->execute([$limit]);
         return $stmt->fetchAll();
+    }
+
+    public function getRecentTopicSlugs(int $limit = 20): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT topic_slug FROM posts WHERE topic_slug != '' ORDER BY created_at DESC LIMIT ?"
+        );
+        $stmt->execute([$limit]);
+        return array_column($stmt->fetchAll(), 'topic_slug');
+    }
+
+    /**
+     * Returns a flat list of book titles used in the most recent $limit posts.
+     */
+    public function getRecentlyUsedBooks(int $limit = 20): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT used_books FROM posts WHERE used_books != '[]' ORDER BY created_at DESC LIMIT ?"
+        );
+        $stmt->execute([$limit]);
+        $rows  = $stmt->fetchAll();
+        $books = [];
+        foreach ($rows as $row) {
+            $decoded = json_decode($row['used_books'], true);
+            if (is_array($decoded)) {
+                $books = array_merge($books, $decoded);
+            }
+        }
+        return array_values(array_unique($books));
     }
 
     public function getLastPostTime(): ?string
