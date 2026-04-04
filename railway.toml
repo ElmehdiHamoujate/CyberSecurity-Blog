@@ -2,6 +2,7 @@
 builder = "nixpacks"
 
 [deploy]
+preDeployCommand = "php scripts/seed_db.php"
 startCommand = "php -S 0.0.0.0:$PORT -t public/"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
